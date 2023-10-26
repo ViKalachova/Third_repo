@@ -15,6 +15,13 @@ def get_birthdays_per_week(users):
         week.append(name_weekday)
         counter += 1
     date_dict = dict(zip(week, week_1))
+    filter_date_in_dict = []
+    for d, a in date_dict.items():
+         if d == 'Saturday' or d == 'Sunday' or d == 'Monday':
+              filter_date_in_dict.append(a)
+    del date_dict['Saturday']
+    del date_dict['Sunday']
+    date_dict['Monday'] = filter_date_in_dict
 
     need_bithday_date = []
     for e in week_1:
@@ -23,8 +30,8 @@ def get_birthdays_per_week(users):
             for key, value in element.items():             #дістаємо усі ключі та значення
                 if key == 'birthday':                      #вибираэмо значення лише за ключем 'birthday'
                      value_day = value.strftime('%d.%m')   #приводимо значення до типу, що й сьогоднішня дата (для порівняння)
-                     if value_day == e:             
-                          need_bithday_date.append(element) #додаємо словник(що задовільнив усі умови) до нового списку
+                     if value_day == e:
+                          need_bithday_date.append(element)  #додаємо словник(що задовільнив усі умови) до нового списку
     
     dict_with_name_date = {}                                #строримо словник, де значення по ключу 'name' стане ключем словника 'dict_with_name_date', а значення по ключу 'birthday' стане значенням словника 'dict_with_name_date'
     for elements in need_bithday_date:                      #беремо перший словник у відсортованому списку
@@ -38,15 +45,22 @@ def get_birthdays_per_week(users):
          return {}
     else:
         for w, day in date_dict.items():
-            day = day.strftime('%d.%m')
             list_with_person = []
             result_dict[w] = list_with_person
-            for person, birthday in dict_with_name_date.items():
-                 birthday = birthday.strftime('%d.%m')
-                 if birthday == day:
-                      list_with_person.append(person)
+            if w == 'Monday':
+                 for m_day in day:
+                      m_day = m_day.strftime('%d.%m')
+                      for person, birthday in dict_with_name_date.items():
+                           birthday = birthday.strftime('%d.%m')
+                           if birthday == m_day:
+                                list_with_person.append(person)
+                      
+            else:
+                 day = day.strftime('%d.%m')
+                 for person, birthday in dict_with_name_date.items():
+                      birthday = birthday.strftime('%d.%m')
+                      if birthday == day:
+                           list_with_person.append(person)
 
         result_dict = {k:v for (k, v) in result_dict.items() if v}
     return result_dict
-
-print(get_birthdays_per_week([{"name": "Bill Ates", "birthday": datetime(1955, 10, 30).date()}, {"name": "Bill Tates", "birthday": datetime(2022, 10, 29).date()}, {"name": "Bill Gates", "birthday": datetime(2023, 10, 28).date()}]))
