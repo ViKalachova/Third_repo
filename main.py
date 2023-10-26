@@ -5,7 +5,7 @@ from datetime import date, datetime, timedelta
 def get_birthdays_per_week(users):
     week = []                                                    #список з днями тижня від сьогоднішнього дня
     week_1 = []                                                  #список з переліком дат від сьогоднішнього дня
-    today_date = datetime.now().date()                        
+    today_date = date.today()                       
     counter = 0
     while counter < 7:
         one_day = timedelta(days = counter)
@@ -40,13 +40,13 @@ def get_birthdays_per_week(users):
                 list_with_name_date.append(value)
         dict_with_name_date[list_with_name_date[0]] = list_with_name_date[1]
 
-    result_dict = {}                                             #створюємо підсумовуючий словник, де ключем буде день тижня, а значенням список співробітників
-    if not users or dict_with_name_date == 0:                    #додамо умову, якщо буде відсутнє вхідне значення 'users' або на цьомц тижні не має день народження у жодного зі співробітників
+    users = {}                                             #створюємо підсумовуючий словник, де ключем буде день тижня, а значенням список співробітників
+    if dict_with_name_date == 0:                           #додамо умову, якщо буде відсутнє вхідне значення 'users' або на цьомц тижні не має день народження у жодного зі співробітників
          return {}
     else:
         for w, day in date_dict.items():                         #беремо словник 'день тижня: дата'
             list_with_person = []                                #створюємо список, аби записати усіх співробітників ітерованого дня
-            result_dict[w] = list_with_person                    #додаємо у підсумовуючий словник ключ - день тижня, значення - список співробітників
+            users[w] = list_with_person                          #додаємо у підсумовуючий словник ключ - день тижня, значення - список співробітників
             if w == 'Monday':                                    #додаємо перевірку для понеділка, адже у понедок збережено декілька дат
                  for m_day in day:
                       m_day = m_day.strftime('%d.%m')
@@ -62,5 +62,5 @@ def get_birthdays_per_week(users):
                       if birthday == day:                        #якщо дата народження співробітника буду дорівнювати даті на цьому тижні(словник 'date_dict')
                            list_with_person.append(person)       #додажмо співробітника до списку співробітників, що народилися у ітерований день
 
-        result_dict = {k:v for (k, v) in result_dict.items() if v}     #видаляємо зі словника дні тижня, які не мають співробітників
-    return result_dict
+        users = {k:v for (k, v) in users.items() if v}           #видаляємо зі словника дні тижня, які не мають співробітників
+    return users
